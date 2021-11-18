@@ -20,8 +20,6 @@ class User(BaseModel):
     #if promary key is not set, a ID primary key automatically gen
     username = CharField(primary_key=True, max_length=20)
     age = IntegerField(default=18, verbose_name="年龄")
-    class Meta:
-        database = db
 
 
 class Tweet(BaseModel):
@@ -32,7 +30,7 @@ class Tweet(BaseModel):
 
 
 if __name__ == "__main__":
-    #db.connect()
+    # db.connect()
     # db.create_tables([User,Tweet])
     try:
         charlie = User(username="charlie1")
