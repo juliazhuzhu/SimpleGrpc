@@ -2,6 +2,7 @@ import datetime
 from peewee import *
 import logging
 
+
 logger = logging.getLogger("peewee")
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
@@ -16,7 +17,13 @@ class BaseModel(Model):
     class Meta:
         database = db
 
+class User(BaseModel):
+    #if promary key is not set, a ID primary key automatically gen
+    username = CharField( max_length=20)
+    age = IntegerField(default=18, verbose_name="年龄")
 
+    class Meta:
+        table_name = "usertest"
 # class Person(BaseModel):
 #     name = CharField(verbose_name='姓名', max_length=10, null=False, index=True)
 #     passwd = CharField(verbose_name='password', max_length=20, null=False, default='123456')
@@ -66,14 +73,14 @@ class BlogToTag(BaseModel):
 
 
 if __name__ == "__main__":
-    # db.connect()
-    # db.create_tables([Person, Pet, Blog, Tag, BlogToTag])
+    db.connect()
+    db.create_tables([Person, Pet, Blog, Tag, BlogToTag, User])
 
     # id = Person.insert({
     #     'first': 'xiaoye',
     #     'last': 'zhu'
     # }).execute()
-    #addtime is not set
+    # #addtime is not set
     # id = Blog.insert({}).execute()
     # print(id)
     #
@@ -103,3 +110,59 @@ if __name__ == "__main__":
 
     person = Person.select().where((Person.first == "xiaoye") & (Person.first == "xiaoye1"))
     print(person.sql())
+
+    ##sql like
+    query = Person.select().where((Person.first.contains('xiaoye')))
+    print (query.sql())
+
+    query = Person.select().where((Person.first.startswith('xiaoye')))
+    print(query.sql())
+
+    #dict
+    # query = Person.select().dicts()
+    # print (query)
+    # for row in query:
+    #     print(type(row))
+    #     print(row)
+
+    person = Person.select().limit(1)
+
+    for row in person:
+        print(row)
+
+
+    import random
+    for i in range(10):
+        User.create(username=f"xiaoye {i}", age=random.randint(18,25))
+
+    users = User.select().order_by(User.age.asc())
+    for user in users:
+        print(user)
+
+    users = User.select().order_by(-User.age)
+    for user in users:
+        print(user)
+
+    #distinct
+    query = User.select(User.age).distinct()
+    for q in query:
+        print(q.age)
+    print (query)
+
+    #func
+    max_age = User.select(fn.MAX(User.age)).scalar()
+
+    print("max age {}".format(max_age))
+
+    #sub query
+    sub_query = User.select(fn.MAX(User.age))
+
+    query = User.select(User.username).where(User.age==sub_query)
+
+    for q in query:
+        print(q.username)
+
+    #origin sql
+    query = User.raw('SELECT * FROM usertest WHERE username=%s', "xiaoye 1")
+    for q in query:
+        print(q.username)
