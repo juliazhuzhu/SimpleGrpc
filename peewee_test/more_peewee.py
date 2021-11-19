@@ -163,6 +163,10 @@ if __name__ == "__main__":
         print(q.username)
 
     #origin sql
-    query = User.raw('SELECT * FROM usertest WHERE username=%s', "xiaoye 1")
+    # query = User.raw('SELECT * FROM usertest WHERE username=%s', "xiaoye 1")
+    # for q in query:
+    #     print(q.username)
+
+    query = User.select().where(SQL('username = "%s"' % "xiaoye 1"))
     for q in query:
-        print(q.username)
+        print(q.username, q.age)
