@@ -9,10 +9,10 @@ import requests
 # print(user)
 
 
-rsp = requests.post("http://127.0.0.1:8083/loginJSON", json={
-    "user": "bo",
-    "password": "123"
-})
+# rsp = requests.post("http://127.0.0.1:8083/loginJSON", json={
+#     "user": "bo",
+#     "password": "123"
+# })
 
 
 # rsp = requests.post("http://127.0.0.1:8083/signup", json={
@@ -23,5 +23,8 @@ rsp = requests.post("http://127.0.0.1:8083/loginJSON", json={
 #     "re_password": "asdfa",
 # })
 
+rsp = requests.get("http://127.0.0.1:8083/auth/ping", headers={
+    "x-token":"bobby",
+})
 
 print(rsp.text)
